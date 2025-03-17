@@ -1,0 +1,349 @@
+---
+title: "How to Ace STAT5"
+output: 
+  html_document:
+    theme: paper
+---
+
+```{r echo=FALSE}
+set.seed(9)
+```
+
+<div class="topnav">
+  <a class="active" href="stat5.html">Probability</a>
+  <a href="stat5-stat.html">Statistics</a>
+</div>
+
+<style type="text/css">
+  body{
+  font-size: 18pt;
+}
+</style>
+
+# Statistics
+In statistics, we believe that everything we observe is a random process, and we want to model those processes.
+
+## Sampling {.tabset}
+To learn anything about the world we need data, and we get our data by sampling.
+A sampling process looks like this:
+
+1. Identify population of interest
+2. Pick an appropriate sampling method
+3. Generate sample
+
+### Simple Random Sampling
+With Simple Random Sampling, we choose some $n$ members of the population at random as our sample.
+This is usually considered the ideal sampling method.  
+Example:  
+We want to know about midterm grades in STAT 5. We can randomly select 20 students from the class and check their midterm scores.  
+**Population:** All STAT5 midterm scores  
+**Sample:** The 20 selected student's midterm scores.
+
+### Stratified Random Sampling
+We group the population, then sample from each group.
+This is often used in medical studies where it is important to have a diverse set of test subjects.  
+Example:  
+We want to know about midterm grades in STAT 5. We can randomly select 5 students from each discussion section and check their midterm scores.  
+**Population:** All STAT5 midterm scores  
+**Sample:** The 5 students from each discussion section's midterm scores
+
+### Cluster Sampling
+We group the population, then randomly select some groups
+This can be used when physically collecting the data is costly, so it is more efficient to sample groups of people at multiple locations.  
+Example:  
+We want to know about midterm grades in STAT 5. We can randomly select 2 discussion sections and check all of those student's midterm scores.  
+**Population:** All STAT5 midterm scores  
+**Sample:** The students from both selected discussion section's midterm scores
+
+### Systematic Sampling  
+This is not random. Instead, we systematically select individuals to form a sample.  
+Example:  
+We want to know about midterm grades in STAT 5. We select every 3rd student by last name  
+**Population:** All STAT5 midterm scores  
+**Sample:** Every 3rd student by last name's midterm scores.
+
+## Statistics {.tabset}
+A **Statistic** is any function of the sample.
+We usually only think about useful statistics, like the mean, median, or standard deviation.
+
+These are the most common statistics you will see
+```{r}
+sample = c(11, 12, 22, 1, 34, 77, 91, 9, 50)
+```
+
+### Order Statistics
+We calculate these based off ordering the sample
+```{r}
+sort(sample)
+```
+| Statistic | Value | Formula |
+| --- | --- | --- |
+| min | `r min(sample)` | the smallest value in the sample |
+| Q1 | `r quantile(sample, .25)` | the sample, in order, halfway between the min and median |
+| median | `r quantile(sample, .5)` | the sample, in order, halfway between the max and min |
+| Q3 | `r quantile(sample, .75)` | the sample, in order, halfway between the median and max |
+| max | `r max(sample)` | the largest value in the sample |
+| IQR | `r quantile(sample, .75) - quantile(sample, .25)` | Q3-Q1 |
+These are somewhat hard to deal with probabilistically, but when dealing with data with outliers or high skew, these are better than the direct statistics
+
+### Direct Statistics
+These statistics come directly from the sample, and have nicer probabilities to calculate.
+
+| Statistic | Value | Formula |
+| --- | --- | --- |
+| mean | `r mean(sample)` | $\frac{1}{n}\sum_{i=1}^nx_i$ |
+| variance | `r var(sample)` | $\frac{1}{n}\sum_{i=1}^n(x_i-mean(X))^2$ |
+| standard deviation | `r sd(sample)` | $\sqrt{variance(X)}$ |
+| sample size | `r length(sample)` | n |
+These are much nicer to work with in general, so when we can use them, we do.
+
+When we have data with two variables, we might want to see the relationship between them.
+For this, we use **Correlation**.
+$$
+		Cor(X,Y) = \frac{1}{sqrt{Var(X)Var(Y)}}\sum_{i=1}^n(x_i-\bar{x})\sum_{j=1}^m(y_i-\bar{y})\
+$$
+This takes values between -1 and 1, where 1 means a strong positive correlation, i.e. an increase in $X$ leads to an increase in $Y$, and -1 means a strong negative correlation, i.e. an increase in $X$ leads to a decrease in $Y$ and vice versa.
+Values near 0 mean no correlation either way.
+
+### Why choose Direct or Order statistics?
+The easiest way to see the difference between the two is comparing the mean and median.
+Think about a sample where every value is 0.
+```{r}
+sample <- c(0, 0, 0, 0, 0)
+```
+Then the mean and median are both 0.  
+Now, imagine we add one sample with a value of 10.
+```{r}
+sample <- c(0, 0, 0, 0, 0, 10)
+# Calculate the mean
+mean(sample)
+# Calculate the median
+quantile(sample, probs=.5)
+```
+The median is not affected by outliers, while the mean is.
+
+## Visualizations {.tabset}
+We usually start any data analysis with some visualizations of our data, to understand what models to use.
+For this section, I'll use the `mtcars` dataset built in to `R`.
+This dataset contains mpg information about a bunch of cars.
+
+### Histogram
+```{r}
+attach(mtcars)
+hist(mpg, main="Miles Per Gallon")
+hist(wt, main="Weight")
+```
+
+A histogram is a plot of the frequency of each value in a sample.
+This is a one dimensional plot tracking one variable.
+
+Histograms are also a very easy way to see skew and outliers.
+If there are more data points to the left of the peak than to the right of the peak, the data is left skewed.
+If there are more data points to the right of the peak than to the left of the peak, the data is right skewed.
+
+### Bar Graph
+```{r}
+barplot(mpg, main="Miles Per Gallon")
+barplot(wt, main="Weight")
+```
+Bar graphs show the value at each sample. While visually similar to the histogram, we can see that these contain very different information.
+
+### Stem and Leaf plot
+```{r}
+stem(mpg)
+```
+This is essentially equivalent to the histogram, but shows the precise values rather than any 'binning', or considering two very similar values to be the same for plotting.
+
+### Scatterplot
+```{r}
+plot(mpg ~ wt)
+```
+The scatterplot is a multidimensional plot showing each sample as a point, with each axis representing one random variable tracked.
+These are often used for linear regression.
+
+## Estimators {.tabset}
+Because we believe that everything we observe comes from some probability distribution, we want to estimate the parameters that control the probability distribution.
+
+Often times, we model using Normal or Binomial distributions, which are parameterized by their mean.
+
+### Normal Model (unknown mean)
+Let (all independent)
+$$
+		X_1,...,X_n \sim N(\mu, \sigma)
+$$ 
+where $\sigma$ is the known standard deviation and $\mu$ is the unknown true mean.
+We can *estimate* $\mu$ by $\hat\mu = \bar{x} = \frac{1}{n}\sum_{i=1}^nX_i$ the sample mean.
+
+### Binomial Model
+Let (all independent)
+$$
+		Y_1, ..., Y_n \sim Bin(n, p)
+$$
+where $p$ is the unknown true population proportion.
+We can *estimate* $p$ by $\hat p = \frac{1}{n}\sum_{i=1}^nY_i$.
+
+### Linear Regression
+Let
+$$
+		Y_i = \beta_0 + \beta_1 X_i + \epsilon_i, \quad \epsilon_i \sim N(0,\sigma^2) independent
+$$
+Where $Y_i, X_i$ are known, and we want to find $\beta_0, \beta_1$ such that $\sigma^2$ is minimized.
+This models a linear relationship between the random variables $Y,X$.
+
+The **Intercept** term has estimator $\hat\beta_0 = \bar{Y}$.  
+The **Slope** term has estimator $\hat \beta_1 = (X^TX)^{-1}X^T(Y-\hat\beta_0)$.  
+These estimators will not be tested, however interpretation of a linear regression model will.
+
+**Interpretations:**  
+The **Slope** $\beta_1$ is always interpretable, it represents the change in $Y$ corresponding to a 1 unit change in $X$.  
+The **Intercept** $\beta_0$ is the estimated value of $Y$ when $X=0$. This is interpretable when 0 is in the range of $X$.  
+For example, in our `mtcars` dataset,
+```{r}
+summary(lm(mpg ~ wt))
+```
+We get an estimated intercept of 37.2851 and estimated slope of -5.3445.
+The slope is interpreted as "for every 1 unit increase in weight, we expect the miles per gallon to *decrease* by 5.3445".  
+The intercept is interpreted as "a vehicle that weighs 0 units is expected to get 37.2851 miles per gallon, this is not interpretable because there are no cars with weight near or equal to 0".
+
+## Hypothesis Testing {.tabset}
+Everything above is great for fitting statistical models to data, but that only gives us estimates of where the data implies parameters are.
+People are generally not satisfied by these fuzzy results, and want to use statistics to make decisions.
+
+In general, we like to use Hypotheses as below
+$$ 
+		H_0 : \theta = \theta_0 \quad \text{ versus }\quad H_1: \theta \neq \theta_0
+$$
+Where $X_1,...,X_n \sim f(X|\theta)$ are parameterized by $\theta$.
+
+We call $H_0$ the **Null Hypothesis** and $H_1$ as the **Alternative Hypothesis**.
+
+We evaluate using the *Likelihood* of $H_0$, that is, 
+$$
+		P(|\hat\theta| \geq k|\theta=\theta_0)
+$$
+Where $\hat\theta$ is the estimator of $\theta$ generated by the data.
+We set the value of $k$ such that under the null hypothesis, 
+$$
+		P(|\hat\theta| \geq k|\theta=\theta_0) = \alpha
+$$
+This is called the $\alpha$ level test.
+
+### Normal Data Example
+Let
+$$
+		X_1,...,X_n \sim N(\mu,\sigma^2)
+$$
+Where the mean $\mu$ is unknown, and the variance $\sigma^2$ is known.
+We can use the Central Limit Theorem, which says our test statistic is
+$$
+		\frac{\bar{X}-\mu}{\sqrt{\sigma^2/n}} \to N(0,1)
+$$
+Notice that this term is the formula for a **Z-Score**
+
+Lets generate some data and try it out.
+```{r}
+(X <- rnorm(10, mean=5, sd=2))
+```
+We want to test
+$$
+		H_0 : \mu = 0 \text{ versus } H_1: \mu \neq 0
+$$
+at $\alpha=0.05$
+Then, under the null hypothesis and the central limit theorem,
+$$
+		\frac{\bar{X}}{2/\sqrt{n}} \sim N(0,1)
+$$
+So in our generated data, we have
+```{r}
+xbar <- mean(X)
+n <- 10
+(z.score <- xbar/(2/sqrt(n)))
+```
+Because we are testing against $\mu \neq \mu_0$, there are two extremes to consider, so we need to see a value more extreme than $Z_{\alpha/2} = `r qnorm(0.025, mean=0, sd=1)`$.  
+Our z-score is much larger in absolute value than the cutoff, so we say we *reject the null hypothesis*.
+Because we assumed that the null hypothesis was true to generate this likelihood, this tells us only that the null is highly unlikely.
+
+Let's try another test, 
+$$
+		H_0: \mu = 2 \text{ versus } H_1: \mu < 2
+$$
+at $\alpha=0.05$.
+Then, under the null hypothesis and the central limit theorem,
+$$
+		\frac{\bar{X}-2}{2\sqrt{n}} \sim N(0,1)
+$$
+So in our generated data, we have
+```{r}
+xbar <- mean(X)
+n <- 10
+(z.score <- (xbar-2)/(2/sqrt(n)))
+```
+Now there is only one extreme to consider, we reject the null if we see a value smaller than $Z_\alpha = `r qnorm(0.05)`$.  
+Our Z-score is too high, so we *fail to reject the null hypothesis*.
+
+### Binomial/Bernoulli Example  
+Let
+$$
+		X_1,...,X_n \sim Ber(p)
+$$
+with unknown $p$.
+Using the central limit theorem, our test statistic is
+$$
+		\frac{\hat p - p}{\sqrt{(p(1-p)/n}} \to N(0,1)
+$$
+This gives us a Z-score for the sample proportion $\hat p$.
+
+Lets try an example.  
+Suppose we want to check if a coin is fair.
+Let heads be "successes" and tails be "failures".
+We want to test
+$$
+		H_0 : p = 0.5 \text{ versus } H_1: p \neq 0.5
+$$
+at $\alpha = 0.1$.  
+We flip the coin a 20 times and get the following results
+```{r}
+X <- c(1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1)
+(n <- length(X))
+(phat <- sum(X)/n)
+```
+Now we can calculate the z-score of our estimator under the null hypothesis.
+```{r}
+(z.score <- (phat - 0.5)/sqrt(0.5*(1-0.5)/n))
+```
+This Z-score is less extreme than the cutoff $Z_{\alpha/2} = `r qnorm(0.05)`$,
+so we *fail to reject* the null hypothesis that the coin is fair.
+
+## Confidence and p-values 
+These are both related heavily to hypothesis testing.
+A **p-value** is the likelihood of getting a value as extreme or more extreme than the test statistics from the previous section.
+If they are smaller than the set $\alpha$ level, we reject the null hypothesis.
+
+Confidence intervals are a little more interesting.
+
+### Normal Data
+The $1-\alpha$ confidence interval for $\mu$ can be found via the test statistic.
+With probability $1-\alpha$,
+$$
+\begin{aligned}
+		\left|\frac{\bar{X}-\mu}{\sqrt{\sigma^2/n}}\right| &\leq Z_{\alpha/2} \\
+		\implies -Z_{\alpha/2} \leq \frac{\mu-\bar{X}}{\sqrt{\sigma^2/n}} &\leq Z_{\alpha/2} \\
+		\implies -Z_{\alpha/2}\sqrt{\frac{\sigma^2}{n}} \leq \mu-\bar{X} &\leq Z_{\alpha/2}\sqrt{\frac{\sigma^2}{n}} \\
+		\implies \bar{X} - Z_{\alpha/2}\sqrt{\frac{\sigma^2}{n}} \leq \mu &\leq \bar{X} + Z_{\alpha/2}\sqrt{\frac{\sigma^2}{n}} \\
+\end{aligned}
+$$
+We can see that the limits of the interval are random, so we are estimating a *region* where the parameter may be.
+Under the null hypothesis, $(1-\alpha)100\%$ of these intervals will contain the true parameter $\mu$.
+
+### Binomial/Bernoulli Data
+The $1-\alpha$ confidence interval for $p$ can be calculated similarly, the result is
+$$
+		\hat p - Z_{\alpha/2}\sqrt{\frac{\hat p(1-\hat p)}{n}} \leq p \leq \hat p + Z_{\alpha/2}\sqrt{\frac{\hat p(1-\hat p)}{n}}
+$$
+
+### General considerations
+We can see a few properties from both of these.
+Firstly, increasing confidence increases the value of $Z_{\alpha/2}$, so the interval becomes larger with increased confidence.  
+Think about this as "adding more guesses" so that the interval is right more often.
+
+These intervals are also inversely proportional to the sample size, i.e. as sample size increases the interval becomes smaller as we have more confidence in the estimator.
