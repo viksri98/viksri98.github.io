@@ -10,8 +10,9 @@ set.seed(9)
 ```
 
 <div class="topnav">
-  <a class="active" href="stat5.html">Probability</a>
-  <a href="stat5-stat.html">Statistics</a>
+  <a href="stat5.html">Probability</a>
+  <a class="active" href="stat5-stat.html">Statistics</a>
+  <a href="correlation.html">Guide to Correlation</a>
 </div>
 
 <style type="text/css">
