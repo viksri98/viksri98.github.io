@@ -1,6 +1,8 @@
 ---
 title: "Correlation"
-output: ioslides_presentation
+output: 
+  html_document:
+    theme: paper
 ---
 
 
