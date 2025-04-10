@@ -1,0 +1,121 @@
+---
+title: "Correlation"
+output: ioslides_presentation
+---
+
+
+## Setup
+
+We'll use the `mtcars` datset for this presentation, which contains fuel efficiency information about many cars from 1970.
+```{r echo=FALSE}
+hist(mtcars$mpg)
+```
+
+## Setup
+
+We'll use `mpg`, the miles per gallon; `disp`, the engine displacement; and `hp`, the horsepower of the car.
+```{r echo=FALSE}
+par(mfrow=c(1,2))
+plot(mpg ~ disp, data=mtcars)
+plot(disp ~ hp, data=mtcars)
+```
+
+# Variance
+
+## Spread
+
+When we are considering one variable, we like to use sample variance to measure the "spread" of the data.
+$$
+		Var(X) = \sum_{i=1}^n(x_i - \bar{x})^2
+$$
+where $x_i$ is the $i$th case and $\bar{x}$ is the mean of $x_1,...,x_n$.
+
+Standard Deviation might be more familiar, and that is just the square root of the variance
+$$
+		SD(X) = \sqrt{\sum_{i=1}^n(x_i-\bar{x})^2}
+$$
+
+
+# Covariance
+
+## Bivariate Data
+```{r echo=FALSE, fig.height=4}
+par(mfrow=c(1,2))
+plot(mpg ~ disp, data=mtcars)
+plot(disp ~ hp, data=mtcars)
+```
+
+We can see in these plots that the data does not spread evenly in all directions.
+Instead, the spreads of `mpg`, `disp`, and `hp` affect each other.
+
+## Covariance
+
+We measure how the variables vary *together* with Covariance
+$$
+		Cov(X,Y) = \sum_{i=1}^n(x_i-\bar{x})(y_i-\bar{y})
+$$
+$(x_i-\bar{x})$ is the difference between the case $x_i$ and the center $\bar{x}$.
+Same thing for $(y_i-\bar{y})$.
+
+| | $y_i < \bar{y}$ | $y_i > \bar{y}$  |
+| --- | --- | --- |
+| $x_i > \bar{x}$ | $(x_i-\bar{x})(y_i-\bar{y}) < 0$ | $(x_i-\bar{x})(y_i-\bar{y}) > 0$ |
+| $x_i < \bar{x}$ | $(x_i-\bar{x})(y_i-\bar{y}) > 0$ | $(x_i-\bar{x})(y_i-\bar{y}) < 0$ |
+
+## Examples
+```{r echo=FALSE, fig.height=4}
+par(mfrow=c(1,2))
+plot(mpg ~ disp, data=mtcars)
+text(400, 30, paste("Covariance", cov(mtcars$mpg, mtcars$disp)))
+plot(disp ~ hp, data=mtcars)
+text(300, 100, paste("Covariance", cov(mtcars$disp, mtcars$hp)))
+```
+Based on this information, there is much more dependence between `hp` and `disp` than `disp` and `mpg`.
+
+## Issues
+
+The main issue with Covariance as a measure of dependence is that it is tied to the overall spreading of the variables.
+
+Covariance increases (in absolute value) when all of the data is very far from the center, regardless of the relationship between variables.
+
+Correlation scales for the overall spreading in each variable.
+
+# Correlation
+
+## Goals
+
+We want a statistic that 
+
+* has its largest (in absolute value) values when the two variables have an exactly linear relationship.
+* has some defined limits (-1 and 1) for possible values
+* maintains the useful information from Covariance
+
+### Covariance Inequality
+There is a very nice property of covariance, that
+$$
+		Cov(X,Y) \leq \sqrt{Var(X)}\sqrt{Var(Y)}
+$$
+where $Cov(X,Y) = \sqrt{Var(X)Var(Y)}$ only when $X=Y$.
+
+## Correlation
+This is how we come to our formula for correlation:
+$$
+\begin{aligned}
+		Corr(X,Y) &= \frac{Cov(X,Y)}{\sqrt{Var(X)Var(Y)}} \\
+		&= \frac{\sum_{i=1}^n(x_i-\bar{x})(y_i-\bar{y})}{\sqrt{\sum_{i=1}^n(x_i-\bar{x})^2\sum_{i=1}^n(y_i-\bar{y})^2}} \\
+\end{aligned}
+$$
+
+## Examples
+```{r echo=FALSE, fig.height=4}
+par(mfrow=c(1,2))
+plot(mpg ~ disp, data=mtcars)
+text(400, 30, paste("Correlation", cor(mtcars$mpg, mtcars$disp)))
+plot(disp ~ hp, data=mtcars)
+text(300, 100, paste("Correlation", cor(mtcars$disp, mtcars$hp)))
+```
+
+We can see that when accounting for the spread of each variable, the correlations are actually very similar in strength. 
+
+[STAT5 Final Review Guide](stat5.html)
+
