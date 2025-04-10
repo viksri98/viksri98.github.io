@@ -5,26 +5,37 @@ output:
     theme: paper
 ---
 
+<div class="topnav">
+  <a href="stat5.html">Probability</a>
+  <a href="stat5-stat.html">Statistics</a>
+  <a class="active" href="correlation.html">Correlation</a>
+</div>
 
-## Setup
+<style type="text/css">
+  body{
+  font-size: 18pt;
+}
+</style>
+
+## Dataset {.tabset}
 
 We'll use the `mtcars` datset for this presentation, which contains fuel efficiency information about many cars from 1970.
+
+### Univariate Distribution
+For Univariate examples, we will use `mpg`.
 ```{r echo=FALSE}
 hist(mtcars$mpg)
 ```
 
-## Setup
-
-We'll use `mpg`, the miles per gallon; `disp`, the engine displacement; and `hp`, the horsepower of the car.
+### Bivariate Distributions
+For Bivariate examples, we'll use `mpg`, the miles per gallon; `disp`, the engine displacement; and `hp`, the horsepower of the car.
 ```{r echo=FALSE}
 par(mfrow=c(1,2))
 plot(mpg ~ disp, data=mtcars)
 plot(disp ~ hp, data=mtcars)
 ```
 
-# Variance
-
-## Spread
+## Variance
 
 When we are considering one variable, we like to use sample variance to measure the "spread" of the data.
 $$
@@ -40,8 +51,7 @@ $$
 
 # Covariance
 
-## Bivariate Data
-```{r echo=FALSE, fig.height=4}
+```{r echo=FALSE, fig.align="center"}
 par(mfrow=c(1,2))
 plot(mpg ~ disp, data=mtcars)
 plot(disp ~ hp, data=mtcars)
@@ -49,8 +59,6 @@ plot(disp ~ hp, data=mtcars)
 
 We can see in these plots that the data does not spread evenly in all directions.
 Instead, the spreads of `mpg`, `disp`, and `hp` affect each other.
-
-## Covariance
 
 We measure how the variables vary *together* with Covariance
 $$
@@ -65,13 +73,14 @@ Same thing for $(y_i-\bar{y})$.
 | $x_i < \bar{x}$ | $(x_i-\bar{x})(y_i-\bar{y}) > 0$ | $(x_i-\bar{x})(y_i-\bar{y}) < 0$ |
 
 ## Examples
-```{r echo=FALSE, fig.height=4}
+```{r echo=FALSE, fig.align="center"}
 par(mfrow=c(1,2))
 plot(mpg ~ disp, data=mtcars)
 text(400, 30, paste("Covariance", cov(mtcars$mpg, mtcars$disp)))
 plot(disp ~ hp, data=mtcars)
 text(300, 100, paste("Covariance", cov(mtcars$disp, mtcars$hp)))
 ```
+
 Based on this information, there is much more dependence between `hp` and `disp` than `disp` and `mpg`.
 
 ## Issues
@@ -99,7 +108,7 @@ $$
 $$
 where $Cov(X,Y) = \sqrt{Var(X)Var(Y)}$ only when $X=Y$.
 
-## Correlation
+
 This is how we come to our formula for correlation:
 $$
 \begin{aligned}
@@ -109,7 +118,7 @@ $$
 $$
 
 ## Examples
-```{r echo=FALSE, fig.height=4}
+```{r echo=FALSE, fig.align="center"}
 par(mfrow=c(1,2))
 plot(mpg ~ disp, data=mtcars)
 text(400, 30, paste("Correlation", cor(mtcars$mpg, mtcars$disp)))
@@ -119,5 +128,4 @@ text(300, 100, paste("Correlation", cor(mtcars$disp, mtcars$hp)))
 
 We can see that when accounting for the spread of each variable, the correlations are actually very similar in strength. 
 
-[STAT5 Final Review Guide](stat5.html)
 
