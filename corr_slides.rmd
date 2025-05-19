@@ -1,6 +1,6 @@
 ---
 title: "Correlation"
-output: ioslides_presentation
+output: beamer_presentation
 ---
 
 ## Setup
@@ -114,5 +114,5 @@ text(300, 100, paste("Correlation", cor(mtcars$disp, mtcars$hp)))
 
 We can see that when accounting for the spread of each variable, the correlations are actually very similar in strength. 
 
-[STAT5 Final Review Guide](stat5.html)
+
 
